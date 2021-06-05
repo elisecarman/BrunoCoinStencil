@@ -361,9 +361,12 @@ func (bc *Blockchain) GetUTXOForAmt(amt uint32, pubKey string) ([]*UTXOInfo, uin
 	bc.Lock()
 	defer bc.Unlock()
 
-	if bc.GetBalance(pubKey) >= amt && amt > 0{   // added amt > 0
+	if bc.GetBalance(pubKey) >= amt {   // added amt > 0 --> NOT what they want
 		var info []*UTXOInfo
 		var balance uint32 = 0
+		if amt == 0 {              //added this
+			return info,0,true
+		}
 		for w, v := range bc.LastBlock.utxo {
 			if v.LockingScript == pubKey && !v.Liminal {
 				balance =+ v.Amount
