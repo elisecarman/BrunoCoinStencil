@@ -222,7 +222,7 @@ func (h *Heap) Has(t *Transaction) bool {
 // removed.
 func (h *Heap) RemAbv(thresh uint32) []*Transaction {
 	var rem []*Transaction
-	for i := 0; i < h.Len() - 1; i++ {
+	for i := 0; i < h.Len(); i++ {
 		val := (*h)[i]
 		if val.P >= thresh {
 			rem = append(rem, val.T)
