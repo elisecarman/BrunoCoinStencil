@@ -7,7 +7,6 @@ import (
 	"BrunoCoin/pkg/utils"
 	"context"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"math"
 )
@@ -148,8 +147,8 @@ func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
 
 	} else {
 		fmt.Printf("ERROR {tp.GenCBTx}: " + "nil transactions:  were given to the function")
-	//trxFake := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{}, m.Conf.DefLckTm)
-	return errors.New("error")
+	trxFake := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{}, m.Conf.DefLckTm)
+	return tx.Deserialize(trxFake)
 	//log.Fatal(errors.New("nil transactions"))
 	//return nil //this is where program crashes
 	}
