@@ -54,10 +54,12 @@ func (n *Node) ChkBlk(b *block.Block) bool {
 			"nil blocks were given to the function")
 		return false
 	}
+
 	valid :=
 		b.Sz() <= n.Conf.MxBlkSz &&
 			b.SatisfiesPOW(b.Hdr.DiffTarg) &&
 			b.Transactions[0].IsCoinbase() &&
+			b.Transactions[0].SumOutputs() != 0 &&  // <----HERE
 			n.Chain.ChkChainsUTXO(b.Transactions, b.Hdr.PrvBlkHsh)
 
 	//for _,v := range b.Transactions{
@@ -113,8 +115,6 @@ func (n *Node) ChkTx(t *tx.Transaction) bool {
 			t.SumInputs() > t.SumOutputs() &&
 			t.SumOutputs() > 0 &&
 			t.SumInputs() > 0
-
-
 
 	for _,in := range t.Inputs{
 		valid = valid &&
