@@ -7,7 +7,9 @@ import (
 	"BrunoCoin/pkg/utils"
 	"context"
 	"encoding/hex"
+	"errors"
 	"fmt"
+	"log"
 	"math"
 )
 
@@ -121,25 +123,36 @@ func (m *Miner) DifTrg() string {
 // t.SumOutputs()
 
 func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
-	if txs == nil {
-		fmt.Printf("ERROR {tp.GenCBTx}: " + "nil transactions:  were given to the function")
-		trxFake := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{}, m.Conf.DefLckTm)
-		return tx.Deserialize(trxFake)
-		//return nil //this is where program crashes
-	}
-	fee := uint32(0)
-	for _,t := range txs{
-		sumIn := t.SumInputs()
-		sumOut := t.SumOutputs()
-		fee += sumIn - sumOut
-	}
-	halves := math.Floor(float64(m.ChnLen.Load()/ m.Conf.SubsdyHlvRt))  //check if this is the right conversion to do
-	mint := m.Conf.InitSubsdy / 2^uint32(math.Min( halves, float64(m.Conf.MxHlvgs)))  ///need to figure out the limit
-	reward := mint + fee
-	pubK := hex.EncodeToString(m.Id.GetPublicKeyBytes())
-	outpt := proto.NewTxOutpt(reward, pubK)
+	if txs != nil {
+		fee := uint32(0)
+		for _, t := range txs {
+			sumIn := t.SumInputs()
+			sumOut := t.SumOutputs()
+			fee += sumIn - sumOut
+		}
+		if fee > 0 {
+		halves := math.Floor(float64(m.ChnLen.Load() / m.Conf.SubsdyHlvRt))             //check if this is the right conversion to do
+		mint := m.Conf.InitSubsdy/2 ^ uint32(math.Min(halves, float64(m.Conf.MxHlvgs))) ///need to figure out the limit
+		reward := mint + fee
+		pubK := hex.EncodeToString(m.Id.GetPublicKeyBytes())
+		outpt := proto.NewTxOutpt(reward, pubK)
 
-	trx := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{outpt}, m.Conf.DefLckTm)
-	return tx.Deserialize(trx)
+		trx := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{outpt}, m.Conf.DefLckTm)
+		return tx.Deserialize(trx)
+		} else {
+			fmt.Printf("ERROR {tp.GenCBTx}: " + "nil transactions:  were given to the function")
+			//trxFake := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{}, m.Conf.DefLckTm)
+			//return tx.Deserialize(trxFake)
+			log.Fatal(errors.New("no fee"))
+			return nil //this is where program crashes
+		}
+
+	} else {
+		fmt.Printf("ERROR {tp.GenCBTx}: " + "nil transactions:  were given to the function")
+	//trxFake := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{}, m.Conf.DefLckTm)
+	//return tx.Deserialize(trxFake)
+	log.Fatal(errors.New("nil transactions"))
+	return nil //this is where program crashes
+	}
 }
 

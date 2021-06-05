@@ -193,6 +193,11 @@ func (w *Wallet) HndlTxReq(txR *TxReq) {
 			"nil TxReq was given to the function")
 		return
 	}
+	if txR.Amt == 0 {
+		fmt.Printf("ERROR {tp.HndlTxReq}: " +
+			"incorrect requested amount")
+		return
+	}
 	w.mutex.Lock()
 	senderPubK := hex.EncodeToString(w.Id.GetPublicKeyBytes())
 	info, change, bool := w.Chain.GetUTXOForAmt(txR.Amt + txR.Fee, senderPubK)
