@@ -70,7 +70,7 @@ func NewLmnlTxs(c *Config) *LiminalTxs {
 // l.TxQ.IncAll()
 // l.TxQ.RemAbv(...)
 func (l *LiminalTxs) ChkTxs(txs []*tx.Transaction) ([]*tx.Transaction, []*tx.Transaction) {
-	
+
 	l.mutex.Lock()
 	defer l.mutex.Unlock()
 	duplicates := l.TxQ.Rmv(txs)

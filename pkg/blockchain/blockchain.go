@@ -361,7 +361,7 @@ func (bc *Blockchain) GetUTXOForAmt(amt uint32, pubKey string) ([]*UTXOInfo, uin
 	bc.Lock()
 	defer bc.Unlock()
 
-	if bc.GetBalance(pubKey) >= amt{
+	if bc.GetBalance(pubKey) >= amt && amt > 0{   // added amt > 0
 		var info []*UTXOInfo
 		var balance uint32 = 0
 		for w, v := range bc.LastBlock.utxo {
@@ -380,7 +380,7 @@ func (bc *Blockchain) GetUTXOForAmt(amt uint32, pubKey string) ([]*UTXOInfo, uin
 		utils.Debug.Printf("there were not enough utxo in wallet balance")
 	}
 
-	return nil, 0, false
+	return []*UTXOInfo{}, 0, false  // replaced nil with []*UTXOInfo{}
 }
 
 // GenesisBlock creates the genesis block from
