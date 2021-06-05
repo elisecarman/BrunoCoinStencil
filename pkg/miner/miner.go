@@ -131,7 +131,8 @@ func (m *Miner) HndlChkBlk(b *block.Block) {
 		return
 	}
 	m.TxP.ChkTxs(b.Transactions)
-	if m.Mining.Load(){
+	//if m.Mining.Load(){
+	if m.Active.Load(){    //very risky I'm scared
 		utils.Debug.Printf("cycle again!")
 		m.PoolUpdated <- true
 	}

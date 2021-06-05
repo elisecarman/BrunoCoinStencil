@@ -368,7 +368,7 @@ func (bc *Blockchain) GetUTXOForAmt(amt uint32, pubKey string) ([]*UTXOInfo, uin
 			return info,0,true
 		}
 		for w, v := range bc.LastBlock.utxo {
-			if v.LockingScript == pubKey && !v.Liminal {
+			if v.LockingScript == pubKey && !v.Liminal { //remove liminal conditional?
 				balance =+ v.Amount
 				i,j := txo.PrsTXOLoc(w)
 				newInfo := UTXOInfo{i, j, v, v.Amount}
