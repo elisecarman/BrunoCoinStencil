@@ -60,9 +60,10 @@ func (n *Node) ChkBlk(b *block.Block) bool {
 			b.SatisfiesPOW(b.Hdr.DiffTarg) &&
 			b.Transactions[0].IsCoinbase() &&
 			len(b.Transactions) > 1 &&  // <----HERE
+			!b.Transactions[len(b.Transactions) - 10].IsCoinbase() &&
 			b.Transactions[0].SumOutputs() != 0 &&
 			n.Chain.ChkChainsUTXO(b.Transactions, b.Hdr.PrvBlkHsh)
-
+	
 
 
 	//for _,v := range b.Transactions{
