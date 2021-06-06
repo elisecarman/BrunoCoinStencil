@@ -82,6 +82,7 @@ func (tp *TxPool) PriMet() bool {
 func CalcPri(t *tx.Transaction) uint32 {
 	if t != nil {
 		fees := t.SumInputs() - t.SumOutputs()
+
 		pri := fees * 100 / t.Sz()
 		if pri == 0 {
 			return 1

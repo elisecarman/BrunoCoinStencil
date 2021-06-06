@@ -2,6 +2,7 @@ package wallet
 
 import (
 	"BrunoCoin/pkg/block/tx"
+	"fmt"
 	"sync"
 )
 
@@ -70,7 +71,11 @@ func NewLmnlTxs(c *Config) *LiminalTxs {
 // l.TxQ.IncAll()
 // l.TxQ.RemAbv(...)
 func (l *LiminalTxs) ChkTxs(txs []*tx.Transaction) ([]*tx.Transaction, []*tx.Transaction) {
-
+if txs == nil {
+	fmt.Printf("ERROR {txs.ChkTxs}: "+
+		"nil transactions were given to the function")
+	return nil, nil
+}
 	l.mutex.Lock()
 	defer l.mutex.Unlock()
 	duplicates := l.TxQ.Rmv(txs)
@@ -98,6 +103,11 @@ func (l *LiminalTxs) ChkTxs(txs []*tx.Transaction) ([]*tx.Transaction, []*tx.Tra
 // l.mutex.Unlock()
 // l.TxQ.Add(...)
 func (l *LiminalTxs) Add(t *tx.Transaction) {
+	if t == nil {
+		fmt.Printf("ERROR {txs.Add}: "+
+			"nil transaction was given to the function")
+		return
+	}
 	l.mutex.Lock()
 	defer l.mutex.Unlock()
 	l.TxQ.Add(0, t)
