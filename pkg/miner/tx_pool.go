@@ -119,7 +119,7 @@ func CalcPri(t *tx.Transaction) uint32 {
 func (tp *TxPool) Add(t *tx.Transaction) {
 	tp.mutex.Lock()
 	defer tp.mutex.Unlock()
-	if t != nil && !tp.TxQ.Has(t){ //ToDO: remove if bad
+	if t != nil { //ToDO: remove if bad
 		if tp.Ct.Load() < tp.Cap {  //ToDo: made some changes
 			//if tp.Ct.Load() != tp.Cap {
 			tp.TxQ.Add(CalcPri(t), t)
