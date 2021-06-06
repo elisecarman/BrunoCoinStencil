@@ -139,8 +139,13 @@ func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
 		//if fee > 0 {
 		halves := math.Floor(float64(m.ChnLen.Load() / m.Conf.SubsdyHlvRt))
 		//check if this is the right conversion to do
-		mint := m.Conf.InitSubsdy/2 ^ uint32(math.Min(halves, float64(m.Conf.MxHlvgs))) ///need to figure out the limit
-		reward := mint + fee
+		mint := float64(0)
+		if halves < float64(m.Conf.MxHlvgs){
+			mint += float64(m.Conf.InitSubsdy)/ math.Pow(float64(2), halves)   //ToDo: many changes (Pow)
+		} else {
+			mint += float64(m.Conf.InitSubsdy)/ math.Pow(float64(2), float64(m.Conf.MxHlvgs))
+		}
+		reward := uint32(mint) + fee
 		pubK := hex.EncodeToString(m.Id.GetPublicKeyBytes())
 		outpt := proto.NewTxOutpt(reward, pubK)
 

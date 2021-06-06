@@ -2,6 +2,8 @@ package test
 
 import (
 	"BrunoCoin/pkg"
+	"BrunoCoin/pkg/block/tx"
+	"BrunoCoin/pkg/proto"
 	"BrunoCoin/pkg/utils"
 	"testing"
 	"time"
@@ -37,7 +39,41 @@ func TestGenCBTx(t *testing.T) {
 	// and validated by the other node
 	time.Sleep(6 * time.Second)
 	node2.StartMiner()
+	valid := genNd.Mnr.GenCBTx(nil)
+	if valid != nil {
+		t.Errorf("Did not account for nil input")
+	}
+	valid2 := genNd.Mnr.GenCBTx([]*tx.Transaction{})
+	if valid2 != nil {
+		t.Errorf("Did not account for empty input")
+	}
 
+	trxTest := proto.NewTx(0,
+		[]*proto.TransactionInput{},
+		[]*proto.TransactionOutput{},
+		0)
+
+	valid3 := genNd.Mnr.GenCBTx([]*tx.Transaction{tx.Deserialize(trxTest), nil})
+	if valid3 != nil {
+		t.Errorf("Did not account for empty input")
+	}
+
+	inpt1 := proto.NewTxInpt("",0,"", 100)
+	inpt2 := proto.NewTxInpt("",0,"", 100)
+
+	outp1 := proto.NewTxOutpt(200, "")
+	goodTrx := proto.NewTx(0,
+		[]*proto.TransactionInput{inpt1, inpt2},
+		[]*proto.TransactionOutput{outp1}, 0)
+
+	basicValidity := genNd.Mnr.GenCBTx([]*tx.Transaction{tx.Deserialize(goodTrx)})
+
+	if basicValidity.SumInputs() != 0{
+		t.Errorf("Does not send trx with no inputs")
+	}
+	if basicValidity.SumOutputs() != 5 {
+		t.Errorf("Sent the incorrect reward")
+	}
 
 
 }
