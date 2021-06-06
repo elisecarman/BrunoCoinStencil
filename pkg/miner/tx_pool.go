@@ -131,7 +131,7 @@ func (tp *TxPool) Add(t *tx.Transaction) {
 
 			utils.Debug.Printf("the Transaction pool priority is %v", tp.CurPri.Load())
 			tp.CurPri.Add(CalcPri(t))
-			utils.Debug.Printf("the Transaction pool priority is %v", tp.CurPri.Load())
+			utils.Debug.Printf("the Transaction pool priority after addition is %v", tp.CurPri.Load())
 
 			utils.Debug.Printf("the Transaction input sum is %v", t.SumInputs())
 		}
@@ -163,7 +163,20 @@ func (tp *TxPool) ChkTxs(remover []*tx.Transaction) {
 	tp.mutex.Lock()
 	defer tp.mutex.Unlock()
 	if remover != nil {
-		tp.TxQ.Rmv(remover)
+		removed := tp.TxQ.Rmv(remover)
+		count := tp.Ct.Load()
+		tp.Ct.Store(count - uint32(len(removed)))
+
+		utils.Debug.Printf("the current priority, BEFORE removal of duplicates,  is: %v", tp.CurPri.Load() )
+		for _,v := range removed {
+			//index := tp.TxQ.GetIndex(v)
+			//pri := tp.TxQ[index]
+
+			pri := tp.CurPri.Load()
+			tp.CurPri.Store(pri - CalcPri(v))  //ToDO: made some big changes
+		}
+
+		utils.Debug.Printf("the current priority, after removal of duplicates,  is: %v", tp.CurPri.Load() )
 
 	} else {
 		fmt.Printf("ERROR {tp.ChkTxs}: "+
