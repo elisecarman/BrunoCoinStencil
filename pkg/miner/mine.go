@@ -127,19 +127,19 @@ func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
 			sumIn := t.SumInputs()
 			sumOut := t.SumOutputs()
 			fee += sumIn - sumOut
-			utils.Debug.Printf("sum of inputs: &v", t.SumInputs())
-			utils.Debug.Printf("sum of outputs: &v", t.SumOutputs())
+			utils.Debug.Printf("sum of inputs: %v", t.SumInputs())
+			utils.Debug.Printf("sum of outputs: %v", t.SumOutputs())
 		}
 
 		//if fee > 0 {
 		halves := math.Floor(float64(m.ChnLen.Load() / m.Conf.SubsdyHlvRt))
 		//check if this is the right conversion to do
-		utils.Debug.Printf("initial subsidy: &v", m.Conf.InitSubsdy)
-		utils.Debug.Printf("halves: &v", halves)
+		utils.Debug.Printf("initial subsidy: %v", m.Conf.InitSubsdy)
+		utils.Debug.Printf("halves: %v", halves)
 		mint := m.Conf.InitSubsdy/2 ^ uint32(math.Min(halves, float64(m.Conf.MxHlvgs))) ///need to figure out the limit
-		utils.Debug.Printf("mint: &v", mint)
+		utils.Debug.Printf("mint: %v", mint)
 		reward := mint + fee
-		utils.Debug.Printf("reward: &v", reward)
+		utils.Debug.Printf("reward: %v", reward)
 		pubK := hex.EncodeToString(m.Id.GetPublicKeyBytes())
 		outpt := proto.NewTxOutpt(reward, pubK)
 
