@@ -131,8 +131,8 @@ func (m *Miner) HndlChkBlk(b *block.Block) {
 		return
 	}
 	m.TxP.ChkTxs(b.Transactions)
-	if m.Mining.Load(){
-	//if m.Active.Load(){    //very risky I'm scared
+	//if m.Mining.Load(){
+	if m.Active.Load(){    //very risky I'm scared
 		utils.Debug.Printf("cycle again!")
 		m.PoolUpdated <- true
 	}
@@ -163,6 +163,7 @@ func (m *Miner) HndlTx(t *tx.Transaction) {
 		}
 		utils.Debug.Printf("the PoolUpdated channel receives an update")
 		if m.Active.Load(){ m.PoolUpdated <- true}
+
 		//utils.Debug.Printf("Mnr.HndlBlk2: the Sum input of the first transaction %v of mining pool is %v",
 		//	t.NameTag(),t.SumInputs())
 	} else {
