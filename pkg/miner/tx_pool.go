@@ -119,28 +119,21 @@ func CalcPri(t *tx.Transaction) uint32 {
 func (tp *TxPool) Add(t *tx.Transaction) {
 	tp.mutex.Lock()
 	defer tp.mutex.Unlock()
-	if t != nil && !tp.TxQ.Has(t){  //checking for duplicates. ToDO: delete if bad
+	if t != nil && !tp.TxQ.Has(t){ //ToDO: remove if bad
 		if tp.Ct.Load() < tp.Cap {  //ToDo: made some changes
 			//if tp.Ct.Load() != tp.Cap {
-			tp.TxQ.Add(CalcPri(t), t) //still don't know what tip 1 is
-			success := tp.TxQ.Has(t)
-			if !success{ print(">:(")}
+			tp.TxQ.Add(CalcPri(t), t)
+
 
 			utils.Debug.Printf("the Transaction pool count is %v", tp.Ct.Load())
 			tp.Ct.Add(1)
 			utils.Debug.Printf("the Transaction pool count after addition is %v", tp.Ct.Load())
-			//unsure how to calculate cumulative priority
-			//curPri := tp.CurPri.Load()
-			//tp.CurPri.Store(curPri + CalcPri(t)) // is it Store or Add??
+
 			utils.Debug.Printf("the Transaction pool priority is %v", tp.CurPri.Load())
-			pri1 := tp.CurPri.Load()
 			tp.CurPri.Add(CalcPri(t))
 			utils.Debug.Printf("the Transaction pool priority is %v", tp.CurPri.Load())
-			pri2 := tp.CurPri.Load()
-			if pri1 == pri2 {
-				utils.Debug.Printf("the Transaction pool priority after addition is %v", tp.CurPri.Load())
-			}
-			utils.Debug.Printf("the Transaction input sum is", t.SumInputs())
+
+			utils.Debug.Printf("the Transaction input sum is %v", t.SumInputs())
 		}
 	} else {
 		fmt.Printf("ERROR {tp.Add}: "+
