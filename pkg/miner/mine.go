@@ -134,14 +134,16 @@ func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
 		//if fee > 0 {
 		halves := math.Floor(float64(m.ChnLen.Load() / m.Conf.SubsdyHlvRt))
 		//check if this is the right conversion to do
-		utils.Debug.Printf("initial subsidy: %v", m.Conf.InitSubsdy)
-		utils.Debug.Printf("halves: %v", halves)
 		mint := m.Conf.InitSubsdy/2 ^ uint32(math.Min(halves, float64(m.Conf.MxHlvgs))) ///need to figure out the limit
-		utils.Debug.Printf("mint: %v", mint)
 		reward := mint + fee
-		utils.Debug.Printf("reward: %v", reward)
 		pubK := hex.EncodeToString(m.Id.GetPublicKeyBytes())
 		outpt := proto.NewTxOutpt(reward, pubK)
+
+		utils.Debug.Printf("initial subsidy: %v", m.Conf.InitSubsdy)
+		utils.Debug.Printf("halves: %v", halves)
+		utils.Debug.Printf("mint: %v", mint)
+		utils.Debug.Printf("reward: %v", reward)
+
 
 		trx := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{outpt}, m.Conf.DefLckTm)
 		return tx.Deserialize(trx)

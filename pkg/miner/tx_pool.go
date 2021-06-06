@@ -119,7 +119,7 @@ func CalcPri(t *tx.Transaction) uint32 {
 func (tp *TxPool) Add(t *tx.Transaction) {
 	tp.mutex.Lock()
 	defer tp.mutex.Unlock()
-	if t != nil {
+	if t != nil && !tp.TxQ.Has(t){  //checking for duplicates. ToDO: delete if bad
 		if tp.Ct.Load() < tp.Cap {  //ToDo: made some changes
 			//if tp.Ct.Load() != tp.Cap {
 			tp.TxQ.Add(CalcPri(t), t) //still don't know what tip 1 is
