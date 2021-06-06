@@ -38,11 +38,6 @@ func TestGenCBTx(t *testing.T) {
 	time.Sleep(6 * time.Second)
 	node2.StartMiner()
 
-	/* node2.SendTx(1, 50, genNd.Id.GetPublicKeyBytes())
-	node2.SendTx(3, 30, genNd.Id.GetPublicKeyBytes())
-	node2.SendTx(4, 20, genNd.Id.GetPublicKeyBytes()) */
-	// Check that both nodes have "seen" 1 transaction
-	ChkTxSeenLen(t, genNd, 1)
-	ChkTxSeenLen(t, node2, 1)
+
 
 }

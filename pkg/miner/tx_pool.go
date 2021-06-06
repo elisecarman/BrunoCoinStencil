@@ -120,9 +120,7 @@ func (tp *TxPool) Add(t *tx.Transaction) {
 	tp.mutex.Lock()
 	defer tp.mutex.Unlock()
 	if t != nil {
-		count := tp.Ct.Load() //delete later
-		cap := tp.Cap
-		if count != cap {
+		if tp.Ct.Load() < tp.Cap {  //ToDo: made some changes
 			//if tp.Ct.Load() != tp.Cap {
 			tp.TxQ.Add(CalcPri(t), t) //still don't know what tip 1 is
 			success := tp.TxQ.Has(t)
@@ -173,6 +171,7 @@ func (tp *TxPool) ChkTxs(remover []*tx.Transaction) {
 	defer tp.mutex.Unlock()
 	if remover != nil {
 		tp.TxQ.Rmv(remover)
+
 	} else {
 		fmt.Printf("ERROR {tp.ChkTxs}: "+
 			"Incorrect transactions were given to the function")

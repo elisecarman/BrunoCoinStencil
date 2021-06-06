@@ -155,10 +155,8 @@ func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
 
 	} else {
 		fmt.Printf("ERROR {tp.GenCBTx}: " + "nil transactions:  were given to the function")
-	trxFake := proto.NewTx(0, []*proto.TransactionInput{}, []*proto.TransactionOutput{}, 0) ///changed this but not sure if works
-	return tx.Deserialize(trxFake)
 	//log.Fatal(errors.New("nil transactions"))
-	//return nil //this is where program crashes
+	return nil //return nil because it's a pointer
 	}
 }
 
