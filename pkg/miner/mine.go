@@ -121,14 +121,18 @@ func (m *Miner) DifTrg() string {
 // t.SumOutputs()
 
 func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
-	if txs != nil {
+	if txs != nil && len(txs) != 0{  //ToDO: made a possibly bad edit
 		fee := uint32(0)
 		for _, t := range txs {
-			sumIn := t.SumInputs()
-			sumOut := t.SumOutputs()
-			fee += sumIn - sumOut
-			utils.Debug.Printf("sum of inputs: %v", t.SumInputs())
-			utils.Debug.Printf("sum of outputs: %v", t.SumOutputs())
+			if t == nil {    //ToDo: here too
+				fmt.Printf("ERROR {tp.GenCBTx}:" + " a nil transaction within the list")
+			} else {
+				sumIn := t.SumInputs()
+				sumOut := t.SumOutputs()
+				fee += sumIn - sumOut
+				utils.Debug.Printf("sum of inputs: %v", t.SumInputs())
+				utils.Debug.Printf("sum of outputs: %v", t.SumOutputs())
+			}
 		}
 
 		//if fee > 0 {
