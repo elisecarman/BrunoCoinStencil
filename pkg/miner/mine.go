@@ -126,6 +126,7 @@ func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
 		for _, t := range txs {
 			if t == nil {    //ToDo: here too
 				fmt.Printf("ERROR {tp.GenCBTx}:" + " a nil transaction within the list")
+				return nil
 			} else {
 				sumIn := t.SumInputs()
 				sumOut := t.SumOutputs()
