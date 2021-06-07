@@ -127,7 +127,7 @@ func New(c *Config, id id.ID, chain *blockchain.Blockchain) *Wallet {
 // w.SendTx <- ...
 func (w *Wallet) HndlBlk(b *block.Block) {
 	if b == nil {
-		fmt.Printf("ERROR {tp.HndlBlk}: "+
+		fmt.Printf("ERROR {w.HndlBlk}: "+
 			"nil block was given to the function")
 		return
 	}
@@ -189,28 +189,27 @@ func (w *Wallet) HndlBlk(b *block.Block) {
 // proto.NewTxOutpt(...)
 func (w *Wallet) HndlTxReq(txR *TxReq) {
 	if txR == nil {
-		fmt.Printf("ERROR {tp.HndlTxReq}: " +
+		fmt.Printf("ERROR {w.HndlTxReq}: " +
 			"nil TxReq was given to the function")
 		return
 	}
 	if txR.Amt == 0 {
-		fmt.Printf("ERROR {tp.HndlTxReq}: " +
+		fmt.Printf("ERROR {w.HndlTxReq}: " +
 			"incorrect requested amount")
 		return
 	}
 	w.mutex.Lock()
 	senderPubK := hex.EncodeToString(w.Id.GetPublicKeyBytes())
 	info, change, bool := w.Chain.GetUTXOForAmt(txR.Amt + txR.Fee, senderPubK)
-	//if w.Chain.Length() > 1 {  //check on this!
+
 	if !bool {
 		return
 	} //}
 	utils.Debug.Printf("the correct amount was found within wallet %v", utils.FmtAddr(w.Addr))
 	var inputs []*proto.TransactionInput
 	for _, v := range info{
-		unlockScr, err := v.UTXO.MkSig(w.Id)  //What to do with err?
+		unlockScr, err := v.UTXO.MkSig(w.Id)
 		if err != nil {
-			// error message here
 		}
 		newInput := proto.NewTxInpt(v.TxHsh, v.OutIdx, unlockScr, v.Amt)
 		inputs = append(inputs, newInput)
@@ -229,8 +228,6 @@ func (w *Wallet) HndlTxReq(txR *TxReq) {
 		tx.Deserialize(newTrx).NameTag(),tx.Deserialize(newTrx).SumOutputs())
 	utils.Debug.Printf("the fee of the transaction is %v and the amount is %v. We are sending to %v",
 		txR.Fee, txR.Amt, utils.FmtAddr(w.Addr))
-
-	//How many field of fields can we call? D:
 
 	w.LmnlTxs.Add(tx.Deserialize(newTrx))
 	w.SendTx <- tx.Deserialize(newTrx)

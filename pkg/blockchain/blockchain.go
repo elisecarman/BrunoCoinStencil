@@ -104,7 +104,6 @@ func (bc *Blockchain) Add(b *block.Block) {
 			"nil transactions were given to the function")
 		return
 	}
-	//if n.ChkTx <-- check blocks later
 	prevBlock := bc.blocks[b.Hdr.PrvBlkHsh]
 	utxoUpdate := make (map[string]*txo.TransactionOutput)
 	for k, v := range prevBlock.utxo {
@@ -126,17 +125,17 @@ func (bc *Blockchain) Add(b *block.Block) {
 
 	newBlkChnNode := &BlockchainNode{
 		b,
-		bc.blocks[b.Hdr.PrvBlkHsh], //*BlockchainNode
-		utxoUpdate,                 //map[string]*txo.TransactionOutput
-		prevBlock.depth + 1,        //int
+		bc.blocks[b.Hdr.PrvBlkHsh],
+		utxoUpdate,
+		prevBlock.depth + 1,
 	}
 
-	if newBlkChnNode.depth >= bc.LastBlock.depth { //may replace to >
+	if newBlkChnNode.depth >= bc.LastBlock.depth {
 		bc.LastBlock = newBlkChnNode
-	} //use end main chain instead??
+	}
 
 	bc.blocks[newBlkChnNode.Hash()] = newBlkChnNode
-	//anything else left to do?
+
 }
 
 // Length returns the count of blocks on the
@@ -360,14 +359,14 @@ type UTXOInfo struct {
 func (bc *Blockchain) GetUTXOForAmt(amt uint32, pubKey string) ([]*UTXOInfo, uint32, bool) {
 	bc.Lock()
 	defer bc.Unlock()
-	if bc.GetBalance(pubKey) >= amt && pubKey != "" {  // maybe a better way to check pubKey <<-- removed pub key string
+	if bc.GetBalance(pubKey) >= amt && pubKey != "" {
 		var info []*UTXOInfo
 		var balance uint32 = 0
 		if amt == 0 {              //added this
 			return info,0,true
 		}
 		for w, v := range bc.LastBlock.utxo {
-			if v.LockingScript == pubKey && !v.Liminal { //remove liminal conditional?
+			if v.LockingScript == pubKey && !v.Liminal {
 				balance =+ v.Amount
 				i,j := txo.PrsTXOLoc(w)
 				newInfo := UTXOInfo{i, j, v, v.Amount}
@@ -382,7 +381,7 @@ func (bc *Blockchain) GetUTXOForAmt(amt uint32, pubKey string) ([]*UTXOInfo, uin
 		utils.Debug.Printf("there were not enough utxo in wallet balance")
 	}
 
-	return []*UTXOInfo{}, 0, false  // replaced nil with []*UTXOInfo{}
+	return []*UTXOInfo{}, 0, false
 }
 
 // GenesisBlock creates the genesis block from

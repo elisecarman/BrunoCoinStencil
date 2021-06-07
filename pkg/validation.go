@@ -59,18 +59,13 @@ func (n *Node) ChkBlk(b *block.Block) bool {
 		b.Sz() <= n.Conf.MxBlkSz &&
 			b.SatisfiesPOW(b.Hdr.DiffTarg) &&
 			b.Transactions[0].IsCoinbase() &&
-			len(b.Transactions) > 1 &&  // <----HERE
+			len(b.Transactions) > 1 &&
 			!b.Transactions[len(b.Transactions) - 1].IsCoinbase() &&
 			b.Transactions[0].SumOutputs() != 0 &&
 			n.Chain.ChkChainsUTXO(b.Transactions, b.Hdr.PrvBlkHsh)
 
-
-
-	//for _,v := range b.Transactions{
-	//	valid = valid && n.ChkTx(v)
-	//}
 	return valid
-	//Question: error message?
+
 }
 
 
@@ -114,8 +109,6 @@ func (n *Node) ChkTx(t *tx.Transaction) bool {
 
 	valid :=
 		t.Sz() <= n.Conf.MxBlkSz &&
-			//t.Outputs != nil &&
-			//t.Inputs != nil && //not checking nil
 			t.SumInputs() > t.SumOutputs() &&
 			t.SumOutputs() > 0 &&
 			t.SumInputs() > 0
@@ -124,7 +117,7 @@ func (n *Node) ChkTx(t *tx.Transaction) bool {
 		valid = valid &&
 			n.Chain.GetUTXO(in).IsUnlckd(in.UnlockingScript) &&
 			!n.Chain.IsInvalidInput(in) &&
-			!n.Chain.GetUTXO(in).Liminal //<-- added, maybe unecessary
+			!n.Chain.GetUTXO(in).Liminal
 	}
 	return valid
 }

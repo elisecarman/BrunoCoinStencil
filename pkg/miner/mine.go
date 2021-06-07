@@ -121,11 +121,11 @@ func (m *Miner) DifTrg() string {
 // t.SumOutputs()
 
 func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
-	if txs != nil && len(txs) != 0{  //ToDO: made a possibly bad edit
+	if txs != nil && len(txs) != 0{
 		fee := uint32(0)
 		for _, t := range txs {
-			if t == nil {    //ToDo: here too
-				fmt.Printf("ERROR {tp.GenCBTx}:" + " a nil transaction within the list")
+			if t == nil {
+				fmt.Printf("ERROR {txs.GenCBTx}:" + " a nil transaction within the list")
 				return nil
 			} else {
 				sumIn := t.SumInputs()
@@ -136,9 +136,7 @@ func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
 			}
 		}
 
-		//if fee > 0 {
 		halves := math.Floor(float64(m.ChnLen.Load() / m.Conf.SubsdyHlvRt))
-		//check if this is the right conversion to do
 		mint := float64(0)
 		if halves < float64(m.Conf.MxHlvgs){
 			mint += float64(m.Conf.InitSubsdy)/ math.Pow(float64(2), halves)   //ToDo: many changes (Pow)
@@ -149,26 +147,13 @@ func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
 		pubK := hex.EncodeToString(m.Id.GetPublicKeyBytes())
 		outpt := proto.NewTxOutpt(reward, pubK)
 
-		utils.Debug.Printf("initial subsidy: %v", m.Conf.InitSubsdy)
-		utils.Debug.Printf("halves: %v", halves)
-		utils.Debug.Printf("mint: %v", mint)
-		utils.Debug.Printf("reward: %v", reward)
-
-
 		trx := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{outpt}, m.Conf.DefLckTm)
 		return tx.Deserialize(trx)
-		//} else {
-		//	fmt.Printf("ERROR {tp.GenCBTx}: " + "nil transactions:  were given to the function")
-		//	//trxFake := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{}, m.Conf.DefLckTm)
-		//	//return tx.Deserialize(trxFake)
-		//	log.Fatal(errors.New("no fee"))
-		//	return nil //this is where program crashes
-		//}
 
 	} else {
 		fmt.Printf("ERROR {tp.GenCBTx}: " + "nil transactions:  were given to the function")
-	//log.Fatal(errors.New("nil transactions"))
-	return nil //return nil because it's a pointer
+
+	return nil
 	}
 }
 

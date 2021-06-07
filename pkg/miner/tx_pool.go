@@ -89,9 +89,9 @@ func CalcPri(t *tx.Transaction) uint32 {
 			return pri
 		}
 	} else {
-		fmt.Printf("ERROR {tp.CalcPri}: "+
+		fmt.Printf("ERROR {t.CalcPri}: "+
 			"an incorrect transaction was given to the function")
-		return 0 //how to get rid of this?
+		return 0
 	}
 }
 
@@ -119,9 +119,8 @@ func CalcPri(t *tx.Transaction) uint32 {
 func (tp *TxPool) Add(t *tx.Transaction) {
 	tp.mutex.Lock()
 	defer tp.mutex.Unlock()
-	if t != nil { //ToDO: remove if bad
-		if tp.Ct.Load() < tp.Cap {  //ToDo: made some changes
-			//if tp.Ct.Load() != tp.Cap {
+	if t != nil {
+		if tp.Ct.Load() < tp.Cap {
 			tp.TxQ.Add(CalcPri(t), t)
 
 
@@ -169,11 +168,9 @@ func (tp *TxPool) ChkTxs(remover []*tx.Transaction) {
 
 		utils.Debug.Printf("the current priority, BEFORE removal of duplicates,  is: %v", tp.CurPri.Load() )
 		for _,v := range removed {
-			//index := tp.TxQ.GetIndex(v)
-			//pri := tp.TxQ[index]
 
 			pri := tp.CurPri.Load()
-			tp.CurPri.Store(pri - CalcPri(v))  //ToDO: made some big changes
+			tp.CurPri.Store(pri - CalcPri(v))
 		}
 
 		utils.Debug.Printf("the current priority, after removal of duplicates,  is: %v", tp.CurPri.Load() )
