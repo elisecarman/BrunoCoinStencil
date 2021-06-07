@@ -164,7 +164,8 @@ func (m *Miner) HndlTx(t *tx.Transaction) {
 		utils.Debug.Printf("the PoolUpdated channel receives an update")
 		if m.Active.Load(){ m.PoolUpdated <- true}
 
-
+		//utils.Debug.Printf("Mnr.HndlBlk2: the Sum input of the first transaction %v of mining pool is %v",
+		//	t.NameTag(),t.SumInputs())
 	} else {
 		fmt.Printf("ERROR {m.HndlTx}: " +
 			"An incorrect transaction was given to the function")

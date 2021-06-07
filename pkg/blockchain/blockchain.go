@@ -360,7 +360,7 @@ type UTXOInfo struct {
 func (bc *Blockchain) GetUTXOForAmt(amt uint32, pubKey string) ([]*UTXOInfo, uint32, bool) {
 	bc.Lock()
 	defer bc.Unlock()
-	if bc.GetBalance(pubKey) >= amt {  // maybe a better way to check pubKey <<-- removed pub key string
+	if bc.GetBalance(pubKey) >= amt && pubKey != "" {  // maybe a better way to check pubKey <<-- removed pub key string
 		var info []*UTXOInfo
 		var balance uint32 = 0
 		if amt == 0 {              //added this

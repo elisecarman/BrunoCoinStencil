@@ -153,9 +153,6 @@ func (m *Miner) GenCBTx(txs []*tx.Transaction) *tx.Transaction {
 		utils.Debug.Printf("halves: %v", halves)
 		utils.Debug.Printf("mint: %v", mint)
 		utils.Debug.Printf("reward: %v", reward)
-		utils.Debug.Printf("Halving rate: %v", m.Conf.SubsdyHlvRt)
-		utils.Debug.Printf("Max Halving rate: %v", m.Conf.MxHlvgs)
-
 
 
 		trx := proto.NewTx(m.Conf.Ver, []*proto.TransactionInput{}, []*proto.TransactionOutput{outpt}, m.Conf.DefLckTm)
